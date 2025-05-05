@@ -1,25 +1,21 @@
-let wasteLog = [["Timestamp", "Item", "Weight (lbs)"]];
+const wasteLog = [["Timestamp", "Item", "Weight (lbs)"]];
 
-function dropBanana() {
-  const weight = 0.18;
-  const item = "Banana";
+function dropItem(item, weight) {
   const timestamp = new Date().toLocaleString();
+  wasteLog.push([timestamp, item, weight.toFixed(2)]);
 
-  // Update waste log
-  wasteLog.push([timestamp, item, weight]);
+  // Update status
+  const status = document.getElementById("status");
+  status.textContent = `✅ ${weight.toFixed(2)} lbs of ${item.toLowerCase()} thrown away`;
 
-  // Show message
-  const result = document.getElementById("result");
-  result.textContent = `✅ ${weight.toFixed(2)} lbs of ${item.toLowerCase()} thrown away`;
-  result.classList.remove("hidden");
-
-  // Enable download
-  const link = document.getElementById("downloadLink");
-  link.href = createCSV(wasteLog);
-  link.classList.remove("hidden");
+  // Update download link
+  const downloadLink = document.getElementById("downloadLink");
+  downloadLink.href = generateCSV(wasteLog);
+  downloadLink.classList.remove("hidden");
 }
 
-function createCSV(data) {
-  const csvRows = data.map(row => row.join(",")).join("\n");
-  return URL.createObjectURL(new Blob([csvRows], { type: "text/csv" }));
+function generateCSV(data) {
+  const csvContent = data.map(row => row.join(",")).join("\n");
+  const blob = new Blob([csvContent], { type: "text/csv" });
+  return URL.createObjectURL(blob);
 }
